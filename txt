@@ -1,0 +1,12 @@
+admin 
+username = admin
+password = admin
+
+users 
+1
+username = root
+password = root
+
+2 
+username = test2
+password = root

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="card">
+  <img src="https://img.icons8.com/ios-filled/50/4a4e69/lock-2.png" alt="Login Icon" style="display:block;margin:0 auto 1rem;">
+  <h2>Login</h2>
+  <p style="text-align:center; color:#9a8c98; margin-bottom:1.2rem;">Access your dashboard</p>
+  <form method="post" class="login-form">
+    {% csrf_token %}
+    {% if form.errors %}
+      <ul class="errorlist">
+        {% for field in form %}
+          {% for error in field.errors %}
+            <li>{{ field.label }}: {{ error }}</li>
+          {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {{ form.as_p }}
+    <button type="submit">Login</button>
+  </form>
+</div>
+{% endblock %}

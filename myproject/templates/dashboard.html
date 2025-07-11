@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<style>
+  .dashboard-container {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 2rem;
+  }
+  .sidebar {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    min-width: 240px;
+    max-width: 260px;
+    padding: 2rem 1.2rem 1.2rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 0.5rem;
+    height: fit-content;
+  }
+  .sidebar .avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #e5e7eb url('https://img.icons8.com/ios-filled/100/000000/user-male-circle.png') center/60% no-repeat;
+    margin-bottom: 1.2rem;
+    border: 2px solid #6366f1;
+  }
+  .sidebar .name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+    color: #23272f;
+    text-align: center;
+  }
+  .sidebar .role {
+    font-size: 0.97rem;
+    color: #6366f1;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  .sidebar nav {
+    width: 100%;
+    margin-top: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .sidebar nav a, .sidebar nav span {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    color: #23272f;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.7rem 1rem;
+    border-radius: 7px;
+    transition: background 0.15s;
+    font-size: 1.07rem;
+    cursor: pointer;
+  }
+  .sidebar nav a.active, .sidebar nav a:hover {
+    background: #f3f4f6;
+    color: #6366f1;
+  }
+  .sidebar nav span.coming-soon {
+    color: #bdbdbd;
+    cursor: not-allowed;
+    background: #f8fafc;
+    opacity: 0.8;
+  }
+  .coming-badge {
+    background: #fbbf24;
+    color: #fff;
+    font-size: 0.8rem;
+    border-radius: 8px;
+    padding: 0.1rem 0.6rem;
+    margin-left: 0.5rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .profile-details {
+    flex: 1;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    padding: 2.2rem 2.4rem;
+    margin-top: 0.5rem;
+  }
+  .profile-details h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #23272f;
+    margin-bottom: 1.2rem;
+    border-bottom: 2px solid #f3f4f6;
+    padding-bottom: 0.7rem;
+  }
+  .profile-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.9rem;
+  }
+  .profile-table td.label {
+    color: #6b7280;
+    font-weight: 500;
+    width: 180px;
+    padding-right: 1rem;
+    font-size: 1.01rem;
+  }
+  .profile-table td.value {
+    font-weight: 600;
+    color: #23272f;
+    font-size: 1.07rem;
+    background: #f8fafc;
+    border-radius: 6px;
+    padding: 0.55rem 1rem;
+    word-break: break-word;
+  }
+  @media (max-width: 900px) {
+    .dashboard-container {
+      flex-direction: column;
+      gap: 0;
+    }
+    .sidebar {
+      flex-direction: row;
+      min-width: unset;
+      max-width: unset;
+      width: 100%;
+      margin-bottom: 1.5rem;
+      justify-content: flex-start;
+      padding: 1.2rem 0.5rem;
+    }
+    .profile-details {
+      margin-top: 0;
+      padding: 1.2rem 0.7rem;
+    }
+  }
+</style>
+<div style="display:flex;gap:2.5rem;align-items:flex-start;width:100%;">
+  {% include 'sidebar.html' %}
+  <div style="flex:1;min-width:0;">
+    <div class="gatepass-container" style="max-width:1100px;margin:2.5rem auto;background:#f9fafb;border-radius:18px;box-shadow:0 4px 24px rgba(99,102,241,0.09);padding:2.5rem 2rem 2rem 2rem;">
+      <div class="gatepass-title" style="font-size:2rem;font-weight:700;color:#23272f;text-align:left;margin-bottom:2.2rem;letter-spacing:-1px;">Profile Details</div>
+      <table class="profile-table" style="width:100%;font-size:1.19rem;">
+
+      <tr>
+        <td class="label">First Name</td>
+        <td class="value">{{ user.first_name|default:'Prashant' }}</td>
+        <td class="label">Last Name</td>
+        <td class="value">{{ user.last_name|default:'Kumar' }}</td>
+      </tr>
+      <tr>
+        <td class="label">User Name</td>
+        <td class="value">{{ user.username|default:'prashant6743' }}</td>
+        <td class="label">Designation</td>
+        <td class="value">student</td>
+      </tr>
+      <tr>
+        <td class="label">Company Name</td>
+        <td class="value">sunstone</td>
+        <td class="label">Mobile</td>
+        <td class="value">9304397625</td>
+      </tr>
+      <tr>
+        <td class="label">Email</td>
+        <td class="value">{{ user.email|default:'prashant2422005@gmail.com' }}</td>
+        <td class="label">Aadhar No</td>
+        <td class="value">323456789123</td>
+      </tr>
+      <tr>
+        <td class="label">Sex</td>
+        <td class="value">Male</td>
+        <td class="label">Age</td>
+        <td class="value">19</td>
+      </tr>
+    </table>
+  </section>
+</div>
+{% endblock %}
+

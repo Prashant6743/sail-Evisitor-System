@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="gatepass-container" style="max-width:1200px;margin:2.5rem auto;background:#f9fafb;border-radius:18px;box-shadow:0 4px 24px rgba(99,102,241,0.09);padding:2.5rem 2rem 2rem 2rem;">
+  <div class="gatepass-title" style="font-size:2rem;font-weight:700;color:#23272f;text-align:left;margin-bottom:2.2rem;letter-spacing:-1px;">Admin - Visitor Applications</div>
+
+  <!-- Upcoming Visitors Section -->
+  <div style="margin-bottom:2.5rem;">
+    <div onclick="toggleSection('upcoming')" style="font-size:1.32rem;font-weight:700;color:#22c55e;margin-bottom:0.7rem;cursor:pointer;user-select:none;display:flex;align-items:center;gap:0.7rem;">
+      <span id="upcoming-arrow" style="transition:transform 0.2s;">&#9654;</span> Upcoming Visitors
+    </div>
+    <div id="upcoming-section" style="display:none;overflow-x:auto;">
+      <table style="width:100%;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 8px rgba(99,102,241,0.04);margin-bottom:0.8rem;">
+        <thead style="background:#f1f5f9;">
+          <tr style="color:#22c55e;font-weight:700;">
+            <th style="padding:0.7rem 0.5rem;">Name</th>
+            <th>Purpose</th>
+            <th>Date</th>
+            <th>Department</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for visitor in upcoming_visitors %}
+          <tr style="text-align:center;font-size:1.09rem;">
+            <td>{{ visitor.first_name }} {{ visitor.last_name }}</td>
+            <td>{{ visitor.purpose }}</td>
+            <td>{{ visitor.from_date }}</td>
+            <td>{{ visitor.visiting_department }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="padding:1.2rem 0;color:#bbb;font-size:1.05rem;">No upcoming visitors.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Pending Visitors Section -->
+  <div style="margin-bottom:2.5rem;">
+    <div onclick="toggleSection('pending')" style="font-size:1.32rem;font-weight:700;color:#f59e42;margin-bottom:0.7rem;cursor:pointer;user-select:none;display:flex;align-items:center;gap:0.7rem;">
+      <span id="pending-arrow" style="transition:transform 0.2s;">&#9654;</span> Pending Visitors
+    </div>
+    <div id="pending-section" style="display:none;overflow-x:auto;">
+      <table style="width:100%;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 8px rgba(99,102,241,0.04);margin-bottom:0.8rem;">
+        <thead style="background:#f1f5f9;">
+          <tr style="color:#f59e42;font-weight:700;">
+            <th style="padding:0.7rem 0.5rem;">Name</th>
+            <th>Purpose</th>
+            <th>Date</th>
+            <th>Department</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for visitor in pending_visitors %}
+          <tr style="text-align:center;font-size:1.09rem;">
+            <td>{{ visitor.first_name }} {{ visitor.last_name }}</td>
+            <td>{{ visitor.purpose }}</td>
+            <td>{{ visitor.from_date }}</td>
+            <td>{{ visitor.visiting_department }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="padding:1.2rem 0;color:#bbb;font-size:1.05rem;">No pending visitors.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    function toggleSection(section) {
+      const sec = document.getElementById(section+'-section');
+      const arrow = document.getElementById(section+'-arrow');
+      if (sec.style.display === 'none') {
+        sec.style.display = 'block';
+        arrow.style.transform = 'rotate(90deg)';
+      } else {
+        sec.style.display = 'none';
+        arrow.style.transform = 'rotate(0deg)';
+      }
+    }
+  </script>
+
+
+      <form method="get" style="margin-bottom:2.2rem;display:flex;gap:1.2rem;align-items:center;flex-wrap:wrap;">
+        <label>From: <input type="date" name="from_date" value="{{ from_date|default:'' }}" required></label>
+        <label>To: <input type="date" name="to_date" value="{{ to_date|default:'' }}" required></label>
+        <button type="submit" style="background:#6366f1;color:#fff;font-weight:700;padding:0.6rem 1.2rem;border-radius:8px;border:none;">Filter</button>
+        <a href="?export=excel&from_date={{ from_date|default:'' }}&to_date={{ to_date|default:'' }}" style="margin-left:1.5rem;background:#22c55e;color:#fff;font-weight:700;padding:0.6rem 1.2rem;border-radius:8px;text-decoration:none;">Download Excel</a>
+      </form>
+      <div style="display:flex;gap:2.2rem;margin-bottom:2.2rem;flex-wrap:wrap;">
+        <div style="flex:1;min-width:180px;background:#fff;border-radius:12px;box-shadow:0 1px 8px rgba(99,102,241,0.06);padding:1.4rem 1.2rem;">
+          <div style="font-size:1.1rem;color:#6366f1;font-weight:600;">Daily Visitors</div>
+          <div style="font-size:2rem;font-weight:700;color:#23272f;">{{ stats.daily }}</div>
+        </div>
+        <div style="flex:1;min-width:180px;background:#fff;border-radius:12px;box-shadow:0 1px 8px rgba(99,102,241,0.06);padding:1.4rem 1.2rem;">
+          <div style="font-size:1.1rem;color:#6366f1;font-weight:600;">Weekly Visitors</div>
+          <div style="font-size:2rem;font-weight:700;color:#23272f;">{{ stats.weekly }}</div>
+        </div>
+        <div style="flex:1;min-width:180px;background:#fff;border-radius:12px;box-shadow:0 1px 8px rgba(99,102,241,0.06);padding:1.4rem 1.2rem;">
+          <div style="font-size:1.1rem;color:#6366f1;font-weight:600;">Monthly Visitors</div>
+          <div style="font-size:2rem;font-weight:700;color:#23272f;">{{ stats.monthly }}</div>
+        </div>
+      </div>
+      <table style="width:100%;margin-top:1.5rem;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 8px rgba(99,102,241,0.04);">
+        <thead style="background:#f1f5f9;">
+          <tr style="font-size:1.12rem;color:#6366f1;font-weight:700;">
+            <th style="padding:0.8rem 0.5rem;">Name</th>
+            <th>Purpose</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Approve</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for app in applications %}
+          <tr style="text-align:center;font-size:1.09rem;">
+            <td>{{ app.first_name }} {{ app.last_name }}</td>
+            <td>{{ app.purpose }}</td>
+            <td>{{ app.from_date }}</td>
+            <td>
+              {% if app.status == 'approved' %}
+                <span style="color:#22c55e;font-weight:700;">Approved</span>
+              {% else %}
+                <span style="color:#f59e42;font-weight:700;">Pending</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if app.status != 'approved' %}
+              <form method="post" action="{% url 'admin_approve_application' app.id %}" style="margin:0;">
+                {% csrf_token %}
+                <button type="submit" style="background:#22c55e;color:#fff;border:none;border-radius:8px;padding:0.4rem 1rem;font-weight:700;">Approve</button>
+              </form>
+              {% else %}
+                <span style="color:#bbb;">—</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" style="padding:2rem 0;color:#bbb;font-size:1.12rem;">No applications found for the selected range.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

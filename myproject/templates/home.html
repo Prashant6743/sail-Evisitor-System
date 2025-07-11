@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="card" style="max-width:600px;">
+  <img src="https://img.icons8.com/ios-filled/80/4a4e69/visit.png" alt="Visitor Pass Icon" style="display:block;margin:0 auto 1rem;">
+  <h2>Welcome to E-Visitor Pass System</h2>
+  <p style="text-align:center; color:#4a4e69; font-size:1.2rem;">A modern, digital solution for secure and easy visitor management at Bokaro SAIL Plant.</p>
+  <ul style="margin:2rem 0 1rem 0; padding:0; list-style:none; color:#22223b;">
+    <li style="margin-bottom:1rem; font-size:1.05rem;"><b>✔ Register</b> for a visitor pass in seconds</li>
+    <li style="margin-bottom:1rem; font-size:1.05rem;"><b>✔ Login</b> to view your dashboard</li>
+    <li style="margin-bottom:1rem; font-size:1.05rem;"><b>✔ Manage</b> your visits securely and digitally</li>
+  </ul>
+  <div style="text-align:center; margin-top:2rem;">
+    <a href="/register/" style="margin-right:1rem;" class="btn"><button>Register</button></a>
+    <a href="/login/" class="btn"><button>Login</button></a>
+  </div>
+</div>
+{% endblock %}

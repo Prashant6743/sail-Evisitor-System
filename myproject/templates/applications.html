@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}My Applications{% endblock %}
+{% block content %}
+<div style="display:flex;gap:2.5rem;align-items:flex-start;width:100%;">
+  {% include 'sidebar.html' %}
+  <div style="flex:1;min-width:0;">
+    <div class="gatepass-container" style="max-width:1100px;margin:2.5rem auto;background:#f9fafb;border-radius:18px;box-shadow:0 4px 24px rgba(99,102,241,0.09);padding:2.5rem 2rem 2rem 2rem;">
+  <div class="gatepass-title" style="font-size:2rem;font-weight:700;color:#23272f;text-align:left;margin-bottom:2.2rem;letter-spacing:-1px;">My GatePass Applications</div>
+  {% if applications %}
+  <div style="overflow-x:auto;">
+    <table class="gatepass-table" style="width:100%;border-collapse:separate;border-spacing:0 0.7rem;font-size:1.08rem;">
+      <thead>
+        <tr style="background:#f1f5f9;color:#6366f1;font-weight:700;">
+          <th style="padding:0.85rem 1.1rem;border-radius:10px 0 0 10px;">Purpose</th>
+          <th style="padding:0.85rem 1.1rem;">From Date</th>
+          <th style="padding:0.85rem 1.1rem;">Duration</th>
+          <th style="padding:0.85rem 1.1rem;">Department</th>
+          <th style="padding:0.85rem 1.1rem;">Status</th>
+          <th style="padding:0.85rem 1.1rem;border-radius:0 10px 10px 0;">Submitted</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for app in applications %}
+        <tr style="background:#fff;box-shadow:0 1px 8px rgba(99,102,241,0.04);border-radius:12px;transition:box-shadow 0.16s;cursor:pointer;" onmouseover="this.style.boxShadow='0 4px 16px rgba(99,102,241,0.11)'" onmouseout="this.style.boxShadow='0 1px 8px rgba(99,102,241,0.04)'">
+          <td style="padding:0.8rem 1.1rem;font-weight:600;color:#23272f;">{{ app.purpose }}</td>
+          <td style="padding:0.8rem 1.1rem;white-space:nowrap;">{{ app.from_date|date:"M. d, Y" }}</td>
+          <td style="padding:0.8rem 1.1rem;text-align:center;">{{ app.duration }}</td>
+          <td style="padding:0.8rem 1.1rem;">{{ app.visiting_department }}</td>
+          <td style="padding:0.8rem 1.1rem;">
+  {% if app.status == 'approved' %}
+    <span style="background:#dcfce7;color:#22c55e;font-weight:600;padding:0.32em 1em;border-radius:8px;font-size:0.99em;">Approved</span>
+  {% else %}
+    <span style="background:#e0e7ff;color:#6366f1;font-weight:600;padding:0.32em 1em;border-radius:8px;font-size:0.99em;">Pending</span>
+  {% endif %}
+</td>
+          <td style="padding:0.8rem 1.1rem;white-space:nowrap;color:#64748b;">{{ app.submitted_at|date:"Y-m-d H:i" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div style="margin:3rem 0;text-align:center;color:#6b7280;font-size:1.25rem;">
+    <div style="font-size:2.5rem;margin-bottom:0.7rem;">📄</div>
+    <div>No applications submitted yet.</div>
+    <div style="margin-top:0.7rem;font-size:1rem;">
+      <a href="/dashboard/gatepassform/" style="color:#6366f1;text-decoration:underline;">Submit a new GatePass application</a>
+    </div>
+  </div>
+  {% endif %}
+</div>
+<style>
+  @media (max-width: 700px) {
+    .gatepass-container { padding: 1.2rem 0.2rem; }
+    .gatepass-title { font-size: 1.3rem !important; }
+    .gatepass-table th, .gatepass-table td { padding: 0.55rem 0.4rem !important; font-size:0.95rem !important; }
+  }
+</style>
+  </div>
+</div>
+{% endblock %}

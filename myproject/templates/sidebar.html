@@ -1,0 +1,83 @@
+<aside class="sidebar" style="background:#fff;border-radius:24px;box-shadow:0 2px 16px rgba(99,102,241,0.07);padding:2.2rem 1.2rem 1.2rem 1.2rem;max-width:320px;width:100%;margin:2rem auto 0 auto;display:flex;flex-direction:column;align-items:center;">
+  <div class="avatar" style="width:90px;height:90px;border-radius:50%;background:#f5f6fa url('https://img.icons8.com/ios-filled/100/000000/user-male-circle.png') center/60% no-repeat;border:3px solid #6366f1;margin-bottom:1.2rem;"></div>
+  <div class="name" style="font-size:1.3rem;font-weight:700;color:#23272f;text-align:center;">{{ user.first_name|default:'Prashant' }} {{ user.last_name|default:'Kumar' }}</div>
+  <div class="role" style="font-size:1.05rem;color:#6366f1;font-weight:600;margin-bottom:1.7rem;text-align:center;">student</div>
+  <nav style="width:100%;display:flex;flex-direction:column;gap:0.85rem;margin-bottom:1.5rem;">
+  <a href="/dashboard/" class="nav-card {% if request.path == '/dashboard/' %} active{% endif %}">
+    <span class="nav-icon">👤</span>
+    <span class="nav-text">Profile</span>
+  </a>
+  <a href="/dashboard/gatepassform/" class="nav-card{% if request.path == '/dashboard/gatepassform/' %} active{% endif %}">
+    <span class="nav-icon">📝</span>
+    <span class="nav-text">GatePass Form</span>
+  </a>
+  <a href="/dashboard/applications/" class="nav-card{% if request.path == '/dashboard/applications/' %} active{% endif %}">
+    <span class="nav-icon">📄</span>
+    <span class="nav-text">Applications</span>
+  </a>
+  <a href="/dashboard/changepassword/" class="nav-card{% if request.path == '/dashboard/changepassword/' %} active{% endif %}">
+    <span class="nav-icon">🔒</span>
+    <span class="nav-text">Change Password</span>
+  </a>
+  <form action="{% url 'logout' %}" method="post" style="margin:0;">
+    {% csrf_token %}
+    <button type="submit" class="nav-card logout-link" style="background:#fff0f0;color:#ef4444;width:100%;border:none;outline:none;cursor:pointer;display:flex;align-items:center;gap:0.7rem;justify-content:left;">
+      <span class="nav-icon">🚪</span>
+      <span class="nav-text">Logout</span>
+    </button>
+  </form>
+  <style>
+    .nav-card {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      background: #f7f8fa;
+      border-radius: 14px;
+      padding: 0.85rem 1.1rem;
+      text-decoration: none;
+      box-shadow: 0 1px 6px rgba(99,102,241,0.06);
+      transition: box-shadow 0.16s, background 0.16s, color 0.16s;
+      min-height: 56px;
+      font-size: 1.18rem;
+      font-weight: 600;
+      color: #6366f1;
+      margin-bottom: 0.5rem;
+    }
+    .nav-card:last-child { margin-bottom: 0; }
+    .nav-card .nav-icon {
+      font-size: 1.45rem;
+      color: #6366f1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+    }
+    .nav-card .nav-text {
+      font-size: 1.19rem;
+      font-weight: 600;
+      color: inherit;
+    }
+    .nav-card.active, .nav-card:hover {
+      background: #e0e7ff;
+      color: #4f46e5;
+      box-shadow: 0 2px 12px rgba(99,102,241,0.09);
+    }
+    .nav-card.active .nav-icon, .nav-card:hover .nav-icon {
+      color: #4f46e5;
+    }
+    .logout-link {
+      color: #ef4444 !important;
+      background: #fef2f2 !important;
+      margin-top: 1.5rem;
+      box-shadow: 0 1px 6px rgba(239,68,68,0.06);
+    }
+    .logout-link .nav-icon {
+      color: #ef4444 !important;
+    }
+    @media (max-width: 700px) {
+      .nav-card { padding: 0.65rem 0.5rem; font-size: 1rem; }
+      .nav-card .nav-icon { font-size: 1.1rem; }
+      .nav-card .nav-text { font-size: 1rem; }
+    }
+  </style>
+</aside>
