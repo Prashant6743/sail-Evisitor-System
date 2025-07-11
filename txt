@@ -9,4 +9,9 @@ password = root
 
 2 
 username = test2
-password = root
+password = root2
+
+
+for user user id is primary key 
+for visitor id uuid is primary key (YEARBSL####)
+

@@ -1,0 +1,13 @@
+<!-- id_card.html: GatePass ID Card for Approved Visitor -->
+<div style="max-width:340px;margin:0 auto;background:#fff;border-radius:14px;box-shadow:0 2px 18px rgba(99,102,241,0.10);padding:2.2rem 2.2rem 1.4rem 2.2rem;position:relative;text-align:center;font-family:sans-serif;">
+  <div style="font-size:1.7rem;font-weight:900;color:#23272f;letter-spacing:1px;">{{ gatepass.first_name|upper }} {{ gatepass.last_name|upper }}</div>
+  <div style="font-size:1.07rem;color:#6366f1;font-weight:600;margin-bottom:1.1rem;">{{ gatepass.designation }}</div>
+  <table style="width:100%;font-size:1.04rem;text-align:left;margin:0 auto 1.2rem auto;">
+    <tr><td style="color:#888;font-weight:600;">ID No</td><td>: {{ gatepass.application_id }}</td></tr>
+    <tr><td style="color:#888;font-weight:600;">Email</td><td>: {{ gatepass.email }}</td></tr>
+    <tr><td style="color:#888;font-weight:600;">Phone</td><td>: {{ gatepass.mobile }}</td></tr>
+    <tr><td style="color:#888;font-weight:600;">Dept</td><td>: {{ gatepass.visiting_department }}</td></tr>
+    <tr><td style="color:#888;font-weight:600;">Valid Thru</td><td>: {{ gatepass.from_date }}</td></tr>
+  </table>
+
+</div>

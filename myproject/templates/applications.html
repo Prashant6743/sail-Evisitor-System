@@ -15,8 +15,10 @@
           <th style="padding:0.85rem 1.1rem;">From Date</th>
           <th style="padding:0.85rem 1.1rem;">Duration</th>
           <th style="padding:0.85rem 1.1rem;">Department</th>
+          
           <th style="padding:0.85rem 1.1rem;">Status</th>
-          <th style="padding:0.85rem 1.1rem;border-radius:0 10px 10px 0;">Submitted</th>
+<th style="padding:0.85rem 1.1rem;">ID Card</th>
+<th style="padding:0.85rem 1.1rem;border-radius:0 10px 10px 0;">Submitted</th>
         </tr>
       </thead>
       <tbody>
@@ -29,13 +31,73 @@
           <td style="padding:0.8rem 1.1rem;">
   {% if app.status == 'approved' %}
     <span style="background:#dcfce7;color:#22c55e;font-weight:600;padding:0.32em 1em;border-radius:8px;font-size:0.99em;">Approved</span>
+  {% elif app.status == 'rejected' %}
+    <span style="background:#fee2e2;color:#ef4444;font-weight:600;padding:0.32em 1em;border-radius:8px;font-size:0.99em;">Rejected</span>
   {% else %}
     <span style="background:#e0e7ff;color:#6366f1;font-weight:600;padding:0.32em 1em;border-radius:8px;font-size:0.99em;">Pending</span>
+  {% endif %}
+</td>
+<td style="padding:0.8rem 1.1rem;text-align:center;">
+  {% if app.status == 'approved' %}
+    <button class="view-id-btn" data-appid="{{ app.id }}" style="padding:0.5em 1.1em;background:#6366f1;color:#fff;border:none;border-radius:9px;cursor:pointer;" title="View ID Card">
+  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"><path fill="white" d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 12c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+</button>
+  {% else %}
+    -
   {% endif %}
 </td>
           <td style="padding:0.8rem 1.1rem;white-space:nowrap;color:#64748b;">{{ app.submitted_at|date:"Y-m-d H:i" }}</td>
         </tr>
         {% endfor %}
+
+<!-- Modal for ID Card -->
+<div id="idCardModal" style="display:none;position:fixed;z-index:9999;left:0;top:0;width:100vw;height:100vh;background:rgba(30,41,59,0.18);align-items:center;justify-content:center;">
+  <div style="background:#fff;padding:2.3rem 2.3rem 1.5rem 2.3rem;border-radius:18px;max-width:380px;margin:0 auto;position:relative;box-shadow:0 2px 24px rgba(99,102,241,0.18);">
+    <span id="closeIdCardModal" style="position:absolute;top:13px;right:18px;font-size:1.5rem;color:#64748b;cursor:pointer;font-weight:bold;">&times;</span>
+    <div id="idCardContentContainer">
+      <!-- ID Card content loaded here -->
+    </div>
+    <button id="downloadIdCardBtn" style="margin-top:1.4rem;background:#6366f1;color:#fff;font-weight:600;padding:0.6em 1.5em;border:none;border-radius:8px;font-size:1.08em;cursor:pointer;">Download as Image</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('idCardModal');
+    const closeBtn = document.getElementById('closeIdCardModal');
+    const idCardContent = document.getElementById('idCardContentContainer');
+    let currentAppId = null;
+    document.querySelectorAll('.view-id-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        currentAppId = this.getAttribute('data-appid');
+        fetch(`/idcard/${currentAppId}/`).then(res => res.text()).then(html => {
+          idCardContent.innerHTML = html;
+          modal.style.display = 'flex';
+        });
+      });
+    });
+    closeBtn.onclick = function() {
+      modal.style.display = 'none';
+      idCardContent.innerHTML = '';
+    };
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = 'none';
+        idCardContent.innerHTML = '';
+      }
+    };
+    document.getElementById('downloadIdCardBtn').onclick = function() {
+      html2canvas(idCardContent.querySelector('div')).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'Visitor_ID_Card.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    };
+  });
+</script>
+
       </tbody>
     </table>
   </div>

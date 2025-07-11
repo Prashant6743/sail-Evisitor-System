@@ -23,9 +23,22 @@ class GatePass(models.Model):
     submitted_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
         max_length=20,
-        choices=[('pending', 'Pending'), ('approved', 'Approved')],
+        choices=[('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')],
         default='pending'
     )
+    application_id = models.CharField(max_length=20, unique=True, null=True, blank=True, db_index=True)
+
+
+    def save(self, *args, **kwargs):
+        from django.utils import timezone
+        if not self.application_id:
+            year = timezone.now().year
+            prefix = f"{year}BSL"
+            # Count existing for this year
+            count = GatePass.objects.filter(application_id__startswith=prefix).count() + 1
+            serial = str(count).zfill(3)
+            self.application_id = f"{prefix}{serial}"
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} - {self.purpose} ({self.submitted_at:%Y-%m-%d})"

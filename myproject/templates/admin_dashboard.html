@@ -104,43 +104,119 @@
       <table style="width:100%;margin-top:1.5rem;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 8px rgba(99,102,241,0.04);">
         <thead style="background:#f1f5f9;">
           <tr style="font-size:1.12rem;color:#6366f1;font-weight:700;">
+            <th style="padding:0.8rem 0.5rem;">Tracking ID</th>
             <th style="padding:0.8rem 0.5rem;">Name</th>
             <th>Purpose</th>
             <th>Date</th>
+            <th>View ID</th>
             <th>Status</th>
             <th>Approve</th>
+            <th>Reject</th>
           </tr>
         </thead>
         <tbody>
           {% for app in applications %}
           <tr style="text-align:center;font-size:1.09rem;">
+            <td style="font-family:monospace;font-weight:600;color:#6366f1;">{{ app.application_id }}</td>
             <td>{{ app.first_name }} {{ app.last_name }}</td>
             <td>{{ app.purpose }}</td>
             <td>{{ app.from_date }}</td>
             <td>
-              {% if app.status == 'approved' %}
-                <span style="color:#22c55e;font-weight:700;">Approved</span>
-              {% else %}
-                <span style="color:#f59e42;font-weight:700;">Pending</span>
-              {% endif %}
+              <button type="button" onclick="showDetails(this)" 
+                data-application-id="{{ app.application_id }}"
+                data-first-name="{{ app.first_name }}"
+                data-last-name="{{ app.last_name }}"
+                data-company-name="{{ app.company_name }}"
+                data-designation="{{ app.designation }}"
+                data-aadhar-no="{{ app.aadhar_no }}"
+                data-mobile="{{ app.mobile }}"
+                data-email="{{ app.email }}"
+                data-purpose="{{ app.purpose }}"
+                data-employee-email="{{ app.employee_email }}"
+                data-from-date="{{ app.from_date }}"
+                data-duration="{{ app.duration }}"
+                data-vehicle-available="{{ app.vehicle_available }}"
+                data-visiting-department="{{ app.visiting_department }}"
+                style="background:#6366f1;color:#fff;border:none;border-radius:8px;padding:0.32rem 1.1rem;font-weight:700;cursor:pointer;">View</button>
             </td>
             <td>
-              {% if app.status != 'approved' %}
-              <form method="post" action="{% url 'admin_approve_application' app.id %}" style="margin:0;">
-                {% csrf_token %}
-                <button type="submit" style="background:#22c55e;color:#fff;border:none;border-radius:8px;padding:0.4rem 1rem;font-weight:700;">Approve</button>
-              </form>
-              {% else %}
-                <span style="color:#bbb;">—</span>
-              {% endif %}
-            </td>
+              {% if app.status == 'approved' %}
+              <span style="color:#22c55e;font-weight:700;">Approved</span>
+            {% elif app.status == 'rejected' %}
+              <span style="color:#ef4444;font-weight:700;">Rejected</span>
+            {% else %}
+              <span style="color:#f59e42;font-weight:700;">Pending</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if app.status == 'pending' %}
+            <form method="post" action="{% url 'admin_approve_application' app.id %}" style="margin:0;display:inline;">
+              {% csrf_token %}
+              <button type="submit" style="background:#22c55e;color:#fff;border:none;border-radius:8px;padding:0.4rem 1rem;font-weight:700;">Approve</button>
+            </form>
+            {% else %}
+              <span style="color:#bbb;">—</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if app.status == 'pending' %}
+            <form method="post" action="{% url 'admin_reject_application' app.id %}" style="margin:0;display:inline;">
+              {% csrf_token %}
+              <button type="submit" style="background:#ef4444;color:#fff;border:none;border-radius:8px;padding:0.4rem 1rem;font-weight:700;">Reject</button>
+            </form>
+            {% else %}
+              <span style="color:#bbb;">—</span>
+            {% endif %}
+          </td>
           </tr>
           {% empty %}
-          <tr><td colspan="5" style="padding:2rem 0;color:#bbb;font-size:1.12rem;">No applications found for the selected range.</td></tr>
+          <tr><td colspan="6" style="padding:2rem 0;color:#bbb;font-size:1.12rem;">No applications found for the selected range.</td></tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
   </div>
 </div>
+<!-- Modal for Application Details -->
+<div id="detailsModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(36,39,46,0.28);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#fff;padding:2.2rem 2.5rem 1.5rem 2.5rem;border-radius:14px;max-width:460px;width:98vw;box-shadow:0 4px 32px rgba(99,102,241,0.14);position:relative;">
+    <button onclick="document.getElementById('detailsModal').style.display='none'" style="position:absolute;top:1.1rem;right:1.2rem;background:none;border:none;font-size:1.6rem;color:#6366f1;cursor:pointer;">&times;</button>
+    <div style="font-size:1.18rem;font-weight:700;color:#23272f;margin-bottom:1.2rem;">GatePass Application Details</div>
+    <table style="width:100%;font-size:1.02rem;">
+      <tr><td style="font-weight:600;">Tracking ID</td><td id="modal-appid"></td></tr>
+      <tr><td style="font-weight:600;">First Name</td><td id="modal-fname"></td></tr>
+      <tr><td style="font-weight:600;">Last Name</td><td id="modal-lname"></td></tr>
+      <tr><td style="font-weight:600;">Company Name</td><td id="modal-company"></td></tr>
+      <tr><td style="font-weight:600;">Designation</td><td id="modal-designation"></td></tr>
+      <tr><td style="font-weight:600;">Aadhar No</td><td id="modal-aadhar"></td></tr>
+      <tr><td style="font-weight:600;">Mobile</td><td id="modal-mobile"></td></tr>
+      <tr><td style="font-weight:600;">Email</td><td id="modal-email"></td></tr>
+      <tr><td style="font-weight:600;">Purpose</td><td id="modal-purpose"></td></tr>
+      <tr><td style="font-weight:600;">Employee Email</td><td id="modal-empemail"></td></tr>
+      <tr><td style="font-weight:600;">From Date</td><td id="modal-fromdate"></td></tr>
+      <tr><td style="font-weight:600;">Duration</td><td id="modal-duration"></td></tr>
+      <tr><td style="font-weight:600;">Vehicle Available</td><td id="modal-vehicle"></td></tr>
+      <tr><td style="font-weight:600;">Visiting Department</td><td id="modal-dept"></td></tr>
+    </table>
+  </div>
+</div>
+<script>
+  function showDetails(btn) {
+    document.getElementById('modal-appid').innerText = btn.getAttribute('data-application-id');
+    document.getElementById('modal-fname').innerText = btn.getAttribute('data-first-name');
+    document.getElementById('modal-lname').innerText = btn.getAttribute('data-last-name');
+    document.getElementById('modal-company').innerText = btn.getAttribute('data-company-name');
+    document.getElementById('modal-designation').innerText = btn.getAttribute('data-designation');
+    document.getElementById('modal-aadhar').innerText = btn.getAttribute('data-aadhar-no');
+    document.getElementById('modal-mobile').innerText = btn.getAttribute('data-mobile');
+    document.getElementById('modal-email').innerText = btn.getAttribute('data-email');
+    document.getElementById('modal-purpose').innerText = btn.getAttribute('data-purpose');
+    document.getElementById('modal-empemail').innerText = btn.getAttribute('data-employee-email');
+    document.getElementById('modal-fromdate').innerText = btn.getAttribute('data-from-date');
+    document.getElementById('modal-duration').innerText = btn.getAttribute('data-duration');
+    document.getElementById('modal-vehicle').innerText = btn.getAttribute('data-vehicle-available');
+    document.getElementById('modal-dept').innerText = btn.getAttribute('data-visiting-department');
+    document.getElementById('detailsModal').style.display = 'flex';
+  }
+</script>
 {% endblock %}

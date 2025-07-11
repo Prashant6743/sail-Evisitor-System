@@ -74,6 +74,8 @@ def dashboard_view(request):
     return render(request, "dashboard.html")
 
 from .models import Profile, GatePass
+from django.http import HttpResponse, HttpResponseForbidden
+from django.template.loader import render_to_string
 from django.contrib.auth import authenticate
 from django.utils import timezone
 from datetime import timedelta
@@ -191,8 +193,28 @@ def admin_approve_application(request, app_id):
         app.save()
     return redirect('admin_dashboard')
 
+def admin_reject_application(request, app_id):
+    from django.shortcuts import get_object_or_404, redirect
+    if not request.session.get('is_admin_authenticated'):
+        return redirect('admin_login')
+    if request.method == 'POST':
+        app = get_object_or_404(GatePass, id=app_id)
+        app.status = 'rejected'
+        app.save()
+    return redirect('admin_dashboard')
+
 def applications_view(request):
     if not request.user.is_authenticated:
         return redirect('login')
     applications = GatePass.objects.filter(user=request.user).order_by('-submitted_at')
     return render(request, "applications.html", {"applications": applications})
+
+def id_card_view(request, app_id):
+    # Only allow if user owns the application and it's approved
+    try:
+        gatepass = GatePass.objects.get(id=app_id, user=request.user, status='approved')
+    except GatePass.DoesNotExist:
+        return HttpResponseForbidden('Not allowed')
+    html = render_to_string('id_card.html', {'gatepass': gatepass})
+    return HttpResponse(html)
+
