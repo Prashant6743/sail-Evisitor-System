@@ -158,6 +158,19 @@ def admin_dashboard_view(request):
     apps = GatePass.objects.all()
     if from_date and to_date:
         apps = apps.filter(from_date__gte=from_date, from_date__lte=to_date)
+    tracking_id = request.GET.get('tracking_id', '').strip()
+    name = request.GET.get('name', '').strip()
+    purpose = request.GET.get('purpose', '').strip()
+    if tracking_id:
+        apps = apps.filter(application_id__icontains=tracking_id)
+    if name:
+        name_parts = name.split()
+        for part in name_parts:
+            apps = apps.filter(
+                models.Q(first_name__icontains=part) | models.Q(last_name__icontains=part)
+            )
+    if purpose:
+        apps = apps.filter(purpose__icontains=purpose)
     apps = apps.order_by('-from_date')
     # Excel export
     if export == 'excel' and from_date and to_date:
@@ -174,6 +187,8 @@ def admin_dashboard_view(request):
     upcoming_visitors = GatePass.objects.filter(status='approved', from_date__gte=today).order_by('from_date')
     # Pending visitors: pending and from_date >= today
     pending_visitors = GatePass.objects.filter(status='pending', from_date__gte=today).order_by('from_date')
+    # Rejected visitors: rejected and from_date >= today
+    rejected_visitors = GatePass.objects.filter(status='rejected').order_by('-from_date')
     return render(request, "admin_dashboard.html", {
         'applications': apps,
         'stats': stats,
@@ -181,6 +196,7 @@ def admin_dashboard_view(request):
         'to_date': to_date,
         'upcoming_visitors': upcoming_visitors,
         'pending_visitors': pending_visitors,
+        'rejected_visitors': rejected_visitors,
     })
 
 def admin_approve_application(request, app_id):
