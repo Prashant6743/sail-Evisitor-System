@@ -1,0 +1,126 @@
+.gatepass-container {
+  max-width: 1100px;
+  margin: 2.5rem auto;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  padding: 2.2rem 2.2rem 2rem 2.2rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.gatepass-title {
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #23272f;
+  margin-bottom: 1.2rem;
+}
+
+.gatepass-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem 2rem;
+  margin-bottom: 2rem;
+}
+
+.gatepass-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.22rem;
+}
+
+.gatepass-form label {
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.08rem;
+  font-size: 1rem;
+}
+
+.gatepass-form input, .gatepass-form select {
+  padding: 0.55rem 0.8rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  font-size: 1rem;
+  background: #f8fafc;
+  outline: none;
+  transition: border 0.15s;
+}
+
+.gatepass-form input:focus, .gatepass-form select:focus {
+  border-color: #6366f1;
+}
+
+.gatepass-form .full-width {
+  grid-column: 1/3;
+}
+
+.gatepass-btn {
+  grid-column: 1/3;
+  margin-top: 1.2rem;
+  padding: 0.7rem 0;
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  font-size: 1.08rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background 0.16s;
+}
+
+.gatepass-btn:hover {
+  background: #4f46e5;
+}
+
+.gatepass-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 0.5rem;
+  margin-top: 2.2rem;
+  font-size: 1rem;
+}
+
+.gatepass-table th {
+  background: #f3f4f6;
+  color: #374151;
+  font-weight: 700;
+  padding: 0.7rem 0.9rem;
+  border-radius: 6px;
+}
+
+.gatepass-table td {
+  background: #f8fafc;
+  color: #23272f;
+  font-weight: 500;
+  padding: 0.7rem 0.9rem;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.action-btn {
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background 0.16s;
+}
+
+.action-btn:hover {
+  background: #4f46e5;
+}
+
+@media (max-width: 900px) {
+  .gatepass-form {
+    grid-template-columns: 1fr;
+  }
+  .gatepass-form .full-width {
+    grid-column: 1/2;
+  }
+  .gatepass-container {
+    padding: 1.2rem 0.3rem;
+  }
+} 

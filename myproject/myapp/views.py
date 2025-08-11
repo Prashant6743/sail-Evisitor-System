@@ -1,6 +1,30 @@
 from django.shortcuts import render, redirect
 from .forms import StudentForm
 from .models import Student
+from django.contrib.auth import authenticate, login
+from .forms import RegisterForm
+from django.contrib import messages
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone
+from datetime import timedelta
+import openpyxl
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
+from django.template.loader import render_to_string
+from django.contrib.auth import authenticate
+from django.utils import timezone
+from datetime import timedelta
+import openpyxl
+from django.http import HttpResponse
+from django.db import models
+from django.http import JsonResponse
+import json
+import base64
+from PIL import Image
+import io
+import re
 
 
 def list_students(request):
@@ -81,6 +105,8 @@ from django.utils import timezone
 from datetime import timedelta
 import openpyxl
 from django.http import HttpResponse
+from django.db import models
+from django.http import JsonResponse
 
 def gatepass_form_view(request):
     if not request.user.is_authenticated:
@@ -198,6 +224,131 @@ def admin_dashboard_view(request):
         'pending_visitors': pending_visitors,
         'rejected_visitors': rejected_visitors,
     })
+
+def verify_panel(request):
+    return render(request, 'verify_panel.html')
+
+@csrf_exempt
+def verify_api(request):
+    try:
+        if request.method == 'POST':
+            # Handle image upload
+            try:
+                data = json.loads(request.body)
+                image_data = data.get('image')
+                
+                if not image_data:
+                    return JsonResponse({
+                        'status': 'error',
+                        'message': 'No image data provided'
+                    })
+
+                # Extract base64 data
+                if ',' in image_data:
+                    image_data = image_data.split(',')[1]
+
+                # Convert base64 to image
+                image_bytes = base64.b64decode(image_data)
+                image = Image.open(io.BytesIO(image_bytes))
+                
+                # Here you would process the image with ZXing
+                # For now, we'll just look for a pattern in the image name or metadata
+                # You should replace this with actual QR code processing
+                
+                # Extract application ID from the filename or metadata
+                application_id = None
+                if 'name' in data:
+                    match = re.search(r'(\d{4}[A-Z]{3}\d{3})', data['name'])
+                    if match:
+                        application_id = match.group(1)
+                
+                if not application_id:
+                    return JsonResponse({
+                        'status': 'error',
+                        'message': 'Could not detect a valid QR code in the image'
+                    })
+
+            except json.JSONDecodeError:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'Invalid JSON data'
+                })
+            except Exception as e:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': f'Error processing image: {str(e)}'
+                })
+        else:
+            # Handle GET request (manual ID input or QR scan)
+            application_id = request.GET.get('application_id')
+
+        if not application_id:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'No application ID provided'
+            })
+
+        # Clean up the application ID
+        application_id = application_id.strip().upper()
+        
+        # Validate application ID format (e.g., 2024BSL001)
+        if not re.match(r'^\d{4}[A-Z]{3}\d{3}$', application_id):
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Invalid application ID format'
+            })
+
+        try:
+            gatepass = GatePass.objects.get(application_id=application_id)
+            
+            # Check if the gate pass is approved and not expired
+            valid_until = gatepass.from_date + timedelta(days=gatepass.duration)
+            is_valid = (
+                gatepass.status == 'approved' and 
+                valid_until >= timezone.now().date()
+            )
+            
+            if is_valid:
+                return JsonResponse({
+                    'status': 'success',
+                    'gatepass': {
+                        'first_name': gatepass.first_name,
+                        'last_name': gatepass.last_name,
+                        'application_id': gatepass.application_id,
+                        'visiting_department': gatepass.visiting_department,
+                        'from_date': gatepass.from_date.strftime('%Y-%m-%d'),
+                        'valid_until': valid_until.strftime('%Y-%m-%d')
+                    }
+                })
+            else:
+                status_message = 'Gate pass is '
+                if gatepass.status != 'approved':
+                    status_message += 'not approved'
+                elif valid_until < timezone.now().date():
+                    status_message += 'expired'
+                else:
+                    status_message += 'invalid'
+                
+                return JsonResponse({
+                    'status': 'error',
+                    'message': status_message
+                })
+                
+        except GatePass.DoesNotExist:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Gate pass not found'
+            })
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': f'Error verifying gate pass: {str(e)}'
+            })
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Server error: {str(e)}'
+        })
 
 def admin_approve_application(request, app_id):
     from django.shortcuts import get_object_or_404, redirect

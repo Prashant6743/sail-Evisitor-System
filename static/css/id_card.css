@@ -1,0 +1,53 @@
+.id-card {
+  max-width: 340px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 18px rgba(99,102,241,0.10);
+  padding: 2.2rem 2.2rem 1.4rem 2.2rem;
+  position: relative;
+  text-align: center;
+  font-family: sans-serif;
+}
+
+.id-card-name {
+  font-size: 1.7rem;
+  font-weight: 900;
+  color: #23272f;
+  letter-spacing: 1px;
+}
+
+.id-card-designation {
+  font-size: 1.07rem;
+  color: #6366f1;
+  font-weight: 600;
+  margin-bottom: 1.1rem;
+}
+
+.id-card-details {
+  width: 100%;
+  font-size: 1.04rem;
+  text-align: left;
+  margin: 0 auto 1.2rem auto;
+}
+
+.id-card-details td:first-child {
+  color: #888;
+  font-weight: 600;
+}
+
+.qr-section {
+  margin-top: 1.5rem;
+}
+
+.qr-title {
+  font-size: 1rem;
+  color: #6366f1;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.qr-code {
+  display: block;
+  margin: 0 auto;
+} 

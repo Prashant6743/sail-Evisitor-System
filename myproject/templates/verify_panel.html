@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Gate Pass</title>
+    <link rel="stylesheet" href="{% static 'css/verify.css' %}">
+</head>
+<body>
+    <div class="verify-container">
+        <h1 class="verify-title">Gate Pass Verification</h1>
+        
+        <div class="verification-modes">
+            <button id="qr-mode-btn" class="mode-btn">Camera Scanner</button>
+            <button id="upload-mode-btn" class="mode-btn active">Upload QR Code</button>
+            <button id="manual-mode-btn" class="mode-btn">Manual Entry</button>
+        </div>
+
+        <div id="qr-mode" class="verification-mode">
+            <div class="scanner-container">
+                <video id="scanner-video" playsinline></video>
+                <div class="scanner-overlay"></div>
+                <div class="scanner-info">Click "Start Camera" to begin scanning</div>
+            </div>
+            
+            <div class="scanner-controls">
+                <select id="camera-select" class="camera-select">
+                    <option value="">Loading cameras...</option>
+                </select>
+                <button id="start-camera" class="control-btn">Start Camera</button>
+                <button id="camera-toggle" class="control-btn" style="display: none;">Flash</button>
+            </div>
+        </div>
+
+        <div id="upload-mode" class="verification-mode active">
+            <div class="upload-container">
+                <div class="upload-box" id="upload-box">
+                    <input type="file" id="qr-upload" accept="image/*" class="file-input">
+                    <div class="upload-content">
+                        <img src="{% static 'images/upload-icon.png' %}" alt="Upload" class="upload-icon">
+                        <p>Drop QR code image here or click to upload</p>
+                        <p class="upload-info">(Supports: JPG, PNG, GIF)</p>
+                    </div>
+                </div>
+                <div id="preview-container" class="preview-container" style="display: none;">
+                    <img id="preview-image" src="" alt="Preview">
+                    <button id="retry-upload" class="control-btn">Upload Different Image</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="manual-mode" class="verification-mode">
+            <div class="manual-input">
+                <input type="text" id="application-id" placeholder="Enter Gate Pass ID (e.g., 2024BSL001)">
+                <button id="manual-verify" class="control-btn">Verify</button>
+            </div>
+        </div>
+        
+        <div id="result-container" class="result-container"></div>
+    </div>
+
+    <!-- Load ZXing library -->
+    <script src="https://unpkg.com/@zxing/library@latest"></script>
+    <!-- Load our verification script -->
+    <script src="{% static 'js/verify.js' %}"></script>
+</body>
+</html>

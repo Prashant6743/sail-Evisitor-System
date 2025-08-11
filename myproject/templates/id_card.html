@@ -1,13 +1,29 @@
-<!-- id_card.html: GatePass ID Card for Approved Visitor -->
-<div style="max-width:340px;margin:0 auto;background:#fff;border-radius:14px;box-shadow:0 2px 18px rgba(99,102,241,0.10);padding:2.2rem 2.2rem 1.4rem 2.2rem;position:relative;text-align:center;font-family:sans-serif;">
-  <div style="font-size:1.7rem;font-weight:900;color:#23272f;letter-spacing:1px;">{{ gatepass.first_name|upper }} {{ gatepass.last_name|upper }}</div>
-  <div style="font-size:1.07rem;color:#6366f1;font-weight:600;margin-bottom:1.1rem;">{{ gatepass.designation }}</div>
-  <table style="width:100%;font-size:1.04rem;text-align:left;margin:0 auto 1.2rem auto;">
-    <tr><td style="color:#888;font-weight:600;">ID No</td><td>: {{ gatepass.application_id }}</td></tr>
-    <tr><td style="color:#888;font-weight:600;">Email</td><td>: {{ gatepass.email }}</td></tr>
-    <tr><td style="color:#888;font-weight:600;">Phone</td><td>: {{ gatepass.mobile }}</td></tr>
-    <tr><td style="color:#888;font-weight:600;">Dept</td><td>: {{ gatepass.visiting_department }}</td></tr>
-    <tr><td style="color:#888;font-weight:600;">Valid Thru</td><td>: {{ gatepass.from_date }}</td></tr>
-  </table>
-
-</div>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Visitor Pass - ID Card</title>
+    <link rel="stylesheet" href="{% static 'css/id_card.css' %}">
+</head>
+<body>
+    <div class="id-card">
+        <div class="id-card-name">{{ gatepass.first_name|upper }} {{ gatepass.last_name|upper }}</div>
+        <div class="id-card-designation">{{ gatepass.designation }}</div>
+        <table class="id-card-details">
+            <tr><td>ID No</td><td>: {{ gatepass.application_id }}</td></tr>
+            <tr><td>Email</td><td>: {{ gatepass.email }}</td></tr>
+            <tr><td>Phone</td><td>: {{ gatepass.mobile }}</td></tr>
+            <tr><td>Dept</td><td>: {{ gatepass.visiting_department }}</td></tr>
+            <tr><td>Valid Thru</td><td>: {{ gatepass.from_date }}</td></tr>
+        </table>
+        <div class="qr-section">
+            <div class="qr-title">Scan to Verify</div>
+            <img class="qr-code" 
+                 src="https://api.qrserver.com/v1/create-qr-code/?data={{ gatepass.application_id }}&amp;size=150x150&amp;margin=10" 
+                 alt="Gate Pass QR Code">
+        </div>
+    </div>
+</body>
+</html>
